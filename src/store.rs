@@ -1,4 +1,4 @@
-use crate::autogen::{DISPLAY_TO_FILL_ORDER, NUM_COLS, NUM_ROWS, NUM_TILES, TILES};
+use crate::autogen::{DISPLAY_TO_FILL_ORDER, NUM_COLS, NUM_MIDS, NUM_ROWS, NUM_TILES, TILES};
 use crate::colour::{BUCAS_LETTER, GREY};
 use rand::Rng;
 use std::fs;
@@ -11,9 +11,16 @@ static BOARD_PIECES_PARAM: &str = "&board_pieces=";
 
 static mut RUN_ID: u64 = 0;
 
-pub fn save_board(ids: [u8; NUM_TILES], oris: [u8; NUM_TILES], depth: usize) {
-    let mut builder = Builder::default();
+pub fn save_board_mids(ids: [u8; NUM_MIDS], oris: [u8; NUM_MIDS], depth: usize) {
+    save_board_internal(&ids, &oris, depth);
+}
 
+pub fn save_board(ids: [u8; NUM_TILES], oris: [u8; NUM_TILES], depth: usize) {
+    save_board_internal(&ids, &oris, depth);
+}
+
+fn save_board_internal(ids: &[u8], oris: &[u8], depth: usize) {
+    let mut builder = Builder::default();
     for row in 0..NUM_ROWS {
         for col in 0..NUM_COLS {
             let display_idx = row * NUM_COLS + col;

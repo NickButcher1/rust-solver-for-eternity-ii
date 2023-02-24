@@ -11,7 +11,7 @@ pub const NUM_COLS: usize = 16;
 
 // pub const NUM_CORNERS: u32 = 4;
 // pub const NUM_EDGES: u32 = 56;
-pub const NUM_MIDS: u32 = 196;
+pub const NUM_MIDS: usize = 196;
 
 // pub const NUM_COLOURS: u32 = 22;
 // pub const NUM_COLOURS_INC_GREY: u32 = 23;

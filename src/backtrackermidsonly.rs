@@ -1,4 +1,4 @@
-use crate::autogen::{Cell, ANY_COLOUR, BICOLOUR_TILES, FILL_ORDER, MIDS_BICOLOUR_ARRAY, NUM_TILES, NUM_MIDS};
+use crate::autogen::{Cell, ANY_COLOUR, BICOLOUR_TILES, FILL_ORDER, MIDS_BICOLOUR_ARRAY, NUM_MIDS, NUM_TILES};
 use crate::celltype::{
     MID, MID_LEFT, MID_TOP, MID_TOP_LEFT,
 };
@@ -14,7 +14,7 @@ static RECORD_DEPTH_SOLUTIONS: bool = true;
 static mut MAX_DEPTH: usize = 170;
 
 static mut NUM_SOLUTIONS: u64 = 0;
-static mut NUM_SOLUTIONS_AT_DEPTH: [u64; NUM_TILES] = [0; NUM_TILES];
+static mut NUM_SOLUTIONS_AT_DEPTH: [u64; NUM_MIDS] = [0; NUM_MIDS];
 
 fn print_num_solutions(elapsed_seconds: u64) {
     unsafe {
@@ -25,7 +25,7 @@ fn print_num_solutions(elapsed_seconds: u64) {
 
     unsafe {
         for (idx, num_solutions_at_depth) in
-            NUM_SOLUTIONS_AT_DEPTH.iter().enumerate().take(NUM_TILES)
+            NUM_SOLUTIONS_AT_DEPTH.iter().enumerate().take(NUM_MIDS)
         {
             println!(
                 "{:>3} -> {}",
@@ -62,20 +62,20 @@ pub struct BacktrackerMidsOnly {
     // Whether each tile ID has been placed in placed_tiles or not. Used to prevent placing duplicates.
     used_tiles: [bool; NUM_TILES],
     // The tiles that have currently been placed. Only valid up to the current depth - values are not cleared for better performance.
-    placed_ids: [u8; NUM_TILES],
-    placed_oris: [u8; NUM_TILES],
-    placed_south_colour: [u8; NUM_TILES],
-    placed_east_colour: [u8; NUM_TILES],
+    placed_ids: [u8; NUM_MIDS],
+    placed_oris: [u8; NUM_MIDS],
+    placed_south_colour: [u8; NUM_MIDS],
+    placed_east_colour: [u8; NUM_MIDS],
 }
 
 impl BacktrackerMidsOnly {
     pub fn new() -> Self {
         Self {
             used_tiles: [false; NUM_TILES],
-            placed_ids: [0; NUM_TILES],
-            placed_oris: [0; NUM_TILES],
-            placed_south_colour: [0; NUM_TILES],
-            placed_east_colour: [0; NUM_TILES],
+            placed_ids: [0; NUM_MIDS],
+            placed_oris: [0; NUM_MIDS],
+            placed_south_colour: [0; NUM_MIDS],
+            placed_east_colour: [0; NUM_MIDS],
         }
     }
 
@@ -158,12 +158,12 @@ impl BacktrackerMidsOnly {
                     unsafe {
                         if depth > MAX_DEPTH {
                             MAX_DEPTH = depth;
-                            store::save_board(self.placed_ids, self.placed_oris, depth);
+                            store::save_board_mids(self.placed_ids, self.placed_oris, depth);
                         }
                     }
                 }
 
-                if depth == (NUM_TILES - 1) {
+                if depth == (NUM_MIDS - 1) {
                     self.record_solution();
                 } else {
                     self.add_tile(depth + 1);
@@ -179,6 +179,6 @@ impl BacktrackerMidsOnly {
         unsafe {
             NUM_SOLUTIONS += 1;
         }
-        store::save_board(self.placed_ids, self.placed_oris, NUM_TILES - 1);
+        store::save_board_mids(self.placed_ids, self.placed_oris, NUM_MIDS - 1);
     }
 }
