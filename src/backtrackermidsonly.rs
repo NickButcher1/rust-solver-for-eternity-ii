@@ -90,9 +90,43 @@ impl BacktrackerMidsOnly {
         });
 
         let start_time = SystemTime::now();
-        self.add_tile(0);
+        self.add_tile_0();
         let elapsed_time = start_time.elapsed().unwrap().as_secs();
         print_num_solutions(elapsed_time);
+    }
+
+    fn add_tile_0(&mut self,) {
+        let cell: &Cell = &FILL_ORDER[0];
+        assert_eq!(cell.cell_type, MID_TOP_LEFT);
+        let tileoris_offset: u16 = MIDS_BICOLOUR_ARRAY[ANY_COLOUR as usize][ANY_COLOUR as usize];
+        let num_tiles: usize = NUM_MIDS * 4;
+
+        for tiles_idx in ((tileoris_offset as u32 + 2_u32)
+            ..(tileoris_offset as u32 + 2_u32 + (num_tiles * 4) as u32))
+            .step_by(4)
+        {
+            let tiles_idx_usize = tiles_idx as usize;
+            let id = BICOLOUR_TILES[tiles_idx_usize];
+            let id_usize = id as usize;
+
+            assert_eq!(self.used_tiles[id_usize], false);
+            self.used_tiles[id_usize] = true;
+            self.placed_ids[0] = id;
+            self.placed_oris[0] = BICOLOUR_TILES[tiles_idx_usize + 1];
+            self.placed_south_colour[0] = BICOLOUR_TILES[tiles_idx_usize + 2];
+            self.placed_east_colour[0] = BICOLOUR_TILES[tiles_idx_usize + 3];
+
+            if RECORD_DEPTH_STATS {
+                unsafe {
+                    NUM_SOLUTIONS_AT_DEPTH[0] += 1;
+                }
+            }
+
+            self.add_tile(1);
+
+            // No need to remove from placed_ids or placed_oris here. Ditto placed_south_colour and placed_east_colour.
+            self.used_tiles[id_usize] = false;
+        }
     }
 
     fn add_tile(&mut self, depth: usize) {
@@ -115,17 +149,10 @@ impl BacktrackerMidsOnly {
                     [ANY_COLOUR as usize]
             }
 
-            // TODO Add new array.
-            MID_TOP_LEFT => MIDS_BICOLOUR_ARRAY[ANY_COLOUR as usize][ANY_COLOUR as usize],
-
             other => panic!("Invalid cell_type {}", other),
         };
 
-        let num_tiles: usize = if cell.cell_type == MID_TOP_LEFT {
-            NUM_MIDS * 4
-        } else {
-            BICOLOUR_TILES[tileoris_offset as usize] as usize
-        };
+        let num_tiles: usize = BICOLOUR_TILES[tileoris_offset as usize] as usize;
 
         if num_tiles == 0 {
             return;
