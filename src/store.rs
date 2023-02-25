@@ -1,5 +1,6 @@
 use crate::autogen::{DISPLAY_TO_FILL_ORDER, NUM_COLS, NUM_MIDS, NUM_ROWS, NUM_TILES, TILES};
 use crate::colour::{BUCAS_LETTER, GREY};
+use crate::PLACE_MIDS_ONLY;
 use rand::Rng;
 use std::fs;
 use std::fs::File;
@@ -28,8 +29,8 @@ fn save_board_internal(ids: &[u8], oris: &[u8], depth: usize) {
             let idx = idx_i16 as usize;
 
             if idx_i16 != -1 && idx <= depth {
-                // Convert zero based tile ID back to real tile ID.
-                builder.append(format!("{:>3}/{} ", (ids[idx] as u32) + 1, oris[idx]));
+                let real_tile_id = to_real_tile_id(ids[idx]);
+                builder.append(format!("{:>3}/{} ", real_tile_id, oris[idx]));
             } else {
                 builder.append("---/- ");
             }
@@ -82,7 +83,8 @@ fn save_board_internal(ids: &[u8], oris: &[u8], depth: usize) {
             let idx = *idx_i16 as usize;
 
             if *idx_i16 != -1 && idx <= depth {
-                builder.append(format!("{:0>3}", ids[idx] as usize + 1));
+                let real_tile_id = to_real_tile_id(ids[idx]);
+                builder.append(format!("{:0>3}", real_tile_id));
             } else {
                 builder.append("000");
             }
@@ -123,4 +125,13 @@ fn add_empty_cell(builder: &mut Builder) {
     builder.append(format!("{}", BUCAS_LETTER[GREY as usize]));
     builder.append(format!("{}", BUCAS_LETTER[GREY as usize]));
     builder.append(format!("{}", BUCAS_LETTER[GREY as usize]));
+}
+
+// Convert zero based tile ID back to real tile ID.
+fn to_real_tile_id(id: u8) -> u32 {
+    if PLACE_MIDS_ONLY {
+        (id as u32) + 61
+    } else {
+        (id as u32) + 1
+    }
 }

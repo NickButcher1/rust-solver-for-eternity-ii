@@ -1,7 +1,5 @@
-use crate::autogen::{Cell, ANY_COLOUR, BICOLOUR_TILES, FILL_ORDER, MIDS_BICOLOUR_ARRAY, NUM_MIDS, NUM_TILES};
-use crate::celltype::{
-    MID, MID_LEFT, MID_TOP, MID_TOP_LEFT,
-};
+use crate::autogen::{Cell, ANY_COLOUR, BICOLOUR_TILES, FILL_ORDER, MIDS_BICOLOUR_ARRAY, NUM_MIDS};
+use crate::celltype::{MID, MID_LEFT, MID_TOP, MID_TOP_LEFT};
 use crate::store;
 use separator::Separatable;
 use std::thread;
@@ -60,7 +58,7 @@ fn print_num_solutions(elapsed_seconds: u64) {
  */
 pub struct BacktrackerMidsOnly {
     // Whether each tile ID has been placed in placed_tiles or not. Used to prevent placing duplicates.
-    used_tiles: [bool; NUM_TILES],
+    used_tiles: [bool; NUM_MIDS],
     // The tiles that have currently been placed. Only valid up to the current depth - values are not cleared for better performance.
     placed_ids: [u8; NUM_MIDS],
     placed_oris: [u8; NUM_MIDS],
@@ -71,7 +69,7 @@ pub struct BacktrackerMidsOnly {
 impl BacktrackerMidsOnly {
     pub fn new() -> Self {
         Self {
-            used_tiles: [false; NUM_TILES],
+            used_tiles: [false; NUM_MIDS],
             placed_ids: [0; NUM_MIDS],
             placed_oris: [0; NUM_MIDS],
             placed_south_colour: [0; NUM_MIDS],
@@ -124,7 +122,7 @@ impl BacktrackerMidsOnly {
         };
 
         let num_tiles: usize = if cell.cell_type == MID_TOP_LEFT {
-            NUM_MIDS as usize * 4
+            NUM_MIDS * 4
         } else {
             BICOLOUR_TILES[tileoris_offset as usize] as usize
         };
@@ -133,8 +131,8 @@ impl BacktrackerMidsOnly {
             return;
         }
 
-        for tiles_idx in ((tileoris_offset as u32 + 2 as u32)
-            ..(tileoris_offset as u32 + 2 as u32 + (num_tiles * 4) as u32))
+        for tiles_idx in ((tileoris_offset as u32 + 2_u32)
+            ..(tileoris_offset as u32 + 2_u32 + (num_tiles * 4) as u32))
             .step_by(4)
         {
             let tiles_idx_usize = tiles_idx as usize;
