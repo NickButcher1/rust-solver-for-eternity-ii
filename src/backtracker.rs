@@ -19,7 +19,7 @@ static RECORD_DEPTH_STATS: bool = true;
 static RECORD_DEPTH_SOLUTIONS: bool = true;
 const MAX_THREADS: usize = 8;
 
-static mut MAX_DEPTH: [usize; MAX_THREADS] = [200; MAX_THREADS];
+static mut MAX_DEPTH: [usize; MAX_THREADS] = [204; MAX_THREADS];
 static mut NUM_SOLUTIONS: [u64; MAX_THREADS] = [0; MAX_THREADS];
 static mut NUM_SOLUTIONS_AT_DEPTH: [[u64; NUM_TILES]; MAX_THREADS] = [[0; NUM_TILES]; MAX_THREADS];
 
