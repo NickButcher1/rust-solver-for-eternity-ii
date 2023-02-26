@@ -1,7 +1,7 @@
 use crate::autogen::{DISPLAY_TO_FILL_ORDER, NUM_COLS, NUM_MIDS, NUM_ROWS, NUM_TILES, TILES};
 use crate::colour::{BUCAS_LETTER, GREY};
+use crate::threadparams::ThreadParams;
 use crate::PLACE_MIDS_ONLY;
-use rand::Rng;
 use std::fs;
 use std::fs::File;
 use std::io::Write;
@@ -10,17 +10,25 @@ use string_builder::Builder;
 static BASE_URL: &str = "https://e2.bucas.name/#puzzle=NickB&board_w=16&board_h=16&motifs_order=jblackwood&board_edges=";
 static BOARD_PIECES_PARAM: &str = "&board_pieces=";
 
-static mut RUN_ID: u64 = 0;
-
-pub fn save_board_mids(ids: [u8; NUM_MIDS], oris: [u8; NUM_MIDS], depth: usize) {
-    save_board_internal(&ids, &oris, depth);
+pub fn save_board_mids(
+    thread_params: &ThreadParams,
+    ids: [u8; NUM_MIDS],
+    oris: [u8; NUM_MIDS],
+    depth: usize,
+) {
+    save_board_internal(thread_params, &ids, &oris, depth);
 }
 
-pub fn save_board(ids: [u8; NUM_TILES], oris: [u8; NUM_TILES], depth: usize) {
-    save_board_internal(&ids, &oris, depth);
+pub fn save_board(
+    thread_params: &ThreadParams,
+    ids: [u8; NUM_TILES],
+    oris: [u8; NUM_TILES],
+    depth: usize,
+) {
+    save_board_internal(thread_params, &ids, &oris, depth);
 }
 
-fn save_board_internal(ids: &[u8], oris: &[u8], depth: usize) {
+fn save_board_internal(thread_params: &ThreadParams, ids: &[u8], oris: &[u8], depth: usize) {
     let mut builder = Builder::default();
     for row in 0..NUM_ROWS {
         for col in 0..NUM_COLS {
@@ -97,14 +105,14 @@ fn save_board_internal(ids: &[u8], oris: &[u8], depth: usize) {
     let digest = md5::compute(&board_string);
     let uuid = digest;
 
-    let filename;
-    unsafe {
-        if RUN_ID == 0 {
-            let mut rng = rand::thread_rng();
-            RUN_ID = rng.gen::<u64>();
-        }
-        filename = format!("{}_{:?}_{}.txt", depth + 1, uuid, RUN_ID);
-    }
+    let filename = format!(
+        "{}_{:?}_{}_{}.txt",
+        depth + 1,
+        uuid,
+        thread_params.run_id,
+        thread_params.thread_id
+    );
+
     #[allow(deprecated)]
     let mut solutions_dir = std::env::home_dir().unwrap();
     solutions_dir.push("EternityIISolutions");

@@ -8,7 +8,7 @@ use crate::celltype::{
     CORNER_BOTTOM_LEFT, CORNER_BOTTOM_RIGHT, CORNER_TOP_LEFT, CORNER_TOP_RIGHT, EDGE_BOTTOM,
     EDGE_LEFT, EDGE_RIGHT, EDGE_TOP, MID,
 };
-use crate::store;
+use crate::{store, ThreadParams};
 use separator::Separatable;
 use std::thread;
 use std::time::Duration;
@@ -17,27 +17,26 @@ use std::time::SystemTime;
 // Hard coded, not configurable, so the compiler can optimise the code away when turned off.
 static RECORD_DEPTH_STATS: bool = true;
 static RECORD_DEPTH_SOLUTIONS: bool = true;
-static mut MAX_DEPTH: usize = 200;
+const MAX_THREADS: usize = 8;
 
-static mut NUM_SOLUTIONS: u64 = 0;
-static mut NUM_SOLUTIONS_AT_DEPTH: [u64; NUM_TILES] = [0; NUM_TILES];
+static mut MAX_DEPTH: [usize; MAX_THREADS] = [200; MAX_THREADS];
+static mut NUM_SOLUTIONS: [u64; MAX_THREADS] = [0; MAX_THREADS];
+static mut NUM_SOLUTIONS_AT_DEPTH: [[u64; NUM_TILES]; MAX_THREADS] = [[0; NUM_TILES]; MAX_THREADS];
 
-fn print_num_solutions(elapsed_seconds: u64) {
-    unsafe {
-        println!("NUM_SOLUTIONS {}", NUM_SOLUTIONS);
-    }
-    println!("NUM_SOLUTIONS_AT_DEPTH");
+fn print_num_solutions(thread_params: ThreadParams, elapsed_seconds: u64) {
     let mut total: u64 = 0;
 
     unsafe {
         for (idx, num_solutions_at_depth) in
-            NUM_SOLUTIONS_AT_DEPTH.iter().enumerate().take(NUM_TILES)
+            NUM_SOLUTIONS_AT_DEPTH[thread_params.thread_id].iter().enumerate().take(NUM_TILES)
         {
-            println!(
-                "{:>3} -> {}",
-                idx + 1,
-                num_solutions_at_depth.separated_string()
-            );
+            if !thread_params.is_mt_mode {
+                println!(
+                    "{:>3} -> {}",
+                    idx + 1,
+                    num_solutions_at_depth.separated_string()
+                );
+            }
             total += num_solutions_at_depth;
 
             // Don't waste space printing the rest of the zeroes.
@@ -49,12 +48,17 @@ fn print_num_solutions(elapsed_seconds: u64) {
 
     if elapsed_seconds != 0 {
         let total_per_second = total / elapsed_seconds;
-        println!(
-            "TOTAL: {}    {} per second    {} seconds",
-            total.separated_string(),
-            total_per_second.separated_string(),
-            elapsed_seconds.separated_string()
-        );
+        unsafe {
+            println!(
+                "THREAD {}  SOLUTIONS: {}  BEST: {}  TOTAL: {}    {} per second    {} seconds",
+                thread_params.thread_id,
+                NUM_SOLUTIONS[thread_params.thread_id],
+                MAX_DEPTH[thread_params.thread_id] + 1,
+                total.separated_string(),
+                total_per_second.separated_string(),
+                elapsed_seconds.separated_string()
+            );
+        }
     }
 }
 
@@ -64,7 +68,11 @@ fn print_num_solutions(elapsed_seconds: u64) {
  * For now, only north and west edges are checked for matches when placing a tile. There is no reason that south and
  * east matching can't be added.
  */
-pub struct Backtracker {
+pub struct Backtracker<'a> {
+    thread_params: ThreadParams,
+    max_depth: &'a mut usize,
+    num_solutions: &'a mut u64,
+    num_solutions_at_depth: &'a mut [u64; NUM_TILES],
     // Whether each tile ID has been placed in placed_tiles or not. Used to prevent placing duplicates.
     used_tiles: [bool; NUM_TILES],
     // The tiles that have currently been placed. Only valid up to the current depth - values are not cleared for better performance.
@@ -74,33 +82,40 @@ pub struct Backtracker {
     placed_east_colour: [u8; NUM_TILES],
 }
 
-impl Backtracker {
-    pub fn new() -> Self {
-        Self {
-            used_tiles: [false; NUM_TILES],
-            placed_ids: [0; NUM_TILES],
-            placed_oris: [0; NUM_TILES],
-            placed_south_colour: [0; NUM_TILES],
-            placed_east_colour: [0; NUM_TILES],
+impl Backtracker<'_> {
+    pub fn new(thread_params: ThreadParams) -> Self {
+        unsafe {
+            Self {
+                thread_params,
+                max_depth: &mut MAX_DEPTH[thread_params.thread_id],
+                num_solutions: &mut NUM_SOLUTIONS[thread_params.thread_id],
+                num_solutions_at_depth: &mut NUM_SOLUTIONS_AT_DEPTH[thread_params.thread_id],
+                used_tiles: [false; NUM_TILES],
+                placed_ids: [0; NUM_TILES],
+                placed_oris: [0; NUM_TILES],
+                placed_south_colour: [0; NUM_TILES],
+                placed_east_colour: [0; NUM_TILES],
+            }
         }
     }
 
     pub fn solve(&mut self) {
-        thread::spawn(|| {
+        let thread_params = self.thread_params;
+        thread::spawn(move || {
             let start_time = SystemTime::now();
 
             loop {
                 let elapsed_time = start_time.elapsed();
                 let elapsed_seconds = elapsed_time.unwrap().as_secs();
-                print_num_solutions(elapsed_seconds);
-                thread::sleep(Duration::from_millis(10_000));
+                print_num_solutions(thread_params, elapsed_seconds);
+                thread::sleep(Duration::from_millis(thread_params.stats_every_s));
             }
         });
 
         let start_time = SystemTime::now();
         self.add_tile(0);
         let elapsed_time = start_time.elapsed().unwrap().as_secs();
-        print_num_solutions(elapsed_time);
+        print_num_solutions(self.thread_params, elapsed_time);
     }
 
     fn add_tile(&mut self, depth: usize) {
@@ -174,17 +189,18 @@ impl Backtracker {
                 self.placed_east_colour[depth] = BICOLOUR_TILES[tiles_idx_usize + 3];
 
                 if RECORD_DEPTH_STATS {
-                    unsafe {
-                        NUM_SOLUTIONS_AT_DEPTH[depth] += 1;
-                    }
+                    self.num_solutions_at_depth[depth] += 1;
                 }
 
                 if RECORD_DEPTH_SOLUTIONS {
-                    unsafe {
-                        if depth > MAX_DEPTH {
-                            MAX_DEPTH = depth;
-                            store::save_board(self.placed_ids, self.placed_oris, depth);
-                        }
+                    if depth > *self.max_depth {
+                        *self.max_depth = depth;
+                        store::save_board(
+                            &self.thread_params,
+                            self.placed_ids,
+                            self.placed_oris,
+                            depth,
+                        );
                     }
                 }
 
@@ -200,10 +216,14 @@ impl Backtracker {
         }
     }
 
-    fn record_solution(&self) {
-        unsafe {
-            NUM_SOLUTIONS += 1;
-        }
-        store::save_board(self.placed_ids, self.placed_oris, NUM_TILES - 1);
+    fn record_solution(&mut self) {
+        *self.num_solutions += 1;
+
+        store::save_board(
+            &self.thread_params,
+            self.placed_ids,
+            self.placed_oris,
+            NUM_TILES - 1,
+        );
     }
 }
