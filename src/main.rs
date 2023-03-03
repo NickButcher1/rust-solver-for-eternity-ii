@@ -1,13 +1,13 @@
-use crate::autogen::PLACE_MIDS_ONLY;
 use crate::backtracker::Backtracker;
-use crate::backtrackermidsonly::BacktrackerMidsOnly;
 use crate::threadparams::ThreadParams;
 use rand::Rng;
-use std::{env, thread};
+use std::thread;
 
-mod autogen;
+#[cfg(feature = "backtracker-full")]
+mod autogenfull;
+#[cfg(feature = "backtracker-mids")]
+mod autogenmids;
 mod backtracker;
-mod backtrackermidsonly;
 mod celltype;
 mod colour;
 mod ori;
@@ -15,10 +15,13 @@ mod store;
 mod threadparams;
 
 fn main() {
-    let args: Vec<String> = env::args().collect();
-
-    let (num_threads, stats_every_s) = if args.contains(&"mt".to_string()) {
-        (num_cpus::get() - 1, 60_000)
+    let (num_threads, stats_every_s) = if cfg!(feature = "mt") {
+        if cfg!(feature = "backtracker-mids") {
+            (num_cpus::get() - 1, 300_000)
+        } else {
+            // Limit to four because there are only four first tiles (the four corner tiles).
+            (4, 300_000)
+        }
     } else {
         (1, 10_000)
     };
@@ -40,11 +43,7 @@ fn main() {
                 tile_0_idx: thread_id,
             };
 
-            if PLACE_MIDS_ONLY {
-                BacktrackerMidsOnly::new(thread_params).solve();
-            } else {
-                Backtracker::new(thread_params).solve();
-            }
+            Backtracker::new(thread_params).solve();
         }));
     }
 

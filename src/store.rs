@@ -1,7 +1,13 @@
-use crate::autogen::{DISPLAY_TO_FILL_ORDER, NUM_COLS, NUM_MIDS, NUM_ROWS, NUM_TILES, TILES};
+#[cfg(feature = "backtracker-full")]
+use crate::autogenfull::{
+    BICOLOUR_TILES, DISPLAY_TO_FILL_ORDER, NUM_CELLS, NUM_COLS, NUM_ROWS, NUM_TILES, TILES,
+};
+#[cfg(feature = "backtracker-mids")]
+use crate::autogenmids::{
+    BICOLOUR_TILES, DISPLAY_TO_FILL_ORDER, NUM_CELLS, NUM_COLS, NUM_ROWS, NUM_TILES, TILES,
+};
 use crate::colour::{BUCAS_LETTER, GREY};
 use crate::threadparams::ThreadParams;
-use crate::PLACE_MIDS_ONLY;
 use std::fs;
 use std::fs::File;
 use std::io::Write;
@@ -10,25 +16,7 @@ use string_builder::Builder;
 static BASE_URL: &str = "https://e2.bucas.name/#puzzle=NickB&board_w=16&board_h=16&motifs_order=jblackwood&board_edges=";
 static BOARD_PIECES_PARAM: &str = "&board_pieces=";
 
-pub fn save_board_mids(
-    thread_params: &ThreadParams,
-    ids: [u8; NUM_MIDS],
-    oris: [u8; NUM_MIDS],
-    depth: usize,
-) {
-    save_board_internal(thread_params, &ids, &oris, depth);
-}
-
-pub fn save_board(
-    thread_params: &ThreadParams,
-    ids: [u8; NUM_TILES],
-    oris: [u8; NUM_TILES],
-    depth: usize,
-) {
-    save_board_internal(thread_params, &ids, &oris, depth);
-}
-
-fn save_board_internal(thread_params: &ThreadParams, ids: &[u8], oris: &[u8], depth: usize) {
+pub fn save_board(thread_params: &ThreadParams, tiles_idx: [usize; NUM_TILES], depth: usize) {
     let mut builder = Builder::default();
     for row in 0..NUM_ROWS {
         for col in 0..NUM_COLS {
@@ -37,8 +25,8 @@ fn save_board_internal(thread_params: &ThreadParams, ids: &[u8], oris: &[u8], de
             let idx = idx_i16 as usize;
 
             if idx_i16 != -1 && idx <= depth {
-                let real_tile_id = to_real_tile_id(ids[idx]);
-                builder.append(format!("{:>3}/{} ", real_tile_id, oris[idx]));
+                let real_tile_id = to_real_tile_id(to_id(tiles_idx, idx));
+                builder.append(format!("{:>3}/{} ", real_tile_id, to_ori(tiles_idx, idx)));
             } else {
                 builder.append("---/- ");
             }
@@ -46,37 +34,37 @@ fn save_board_internal(thread_params: &ThreadParams, ids: &[u8], oris: &[u8], de
         builder.append("\n");
     }
 
-    if NUM_TILES == 256 {
+    if NUM_TILES >= 196 {
         builder.append("\n");
         builder.append(BASE_URL);
+        // let mut idx: usize = 0;
         for row in 0..NUM_ROWS {
             for col in 0..NUM_COLS {
                 let display_idx = row * NUM_COLS + col;
                 let idx_i16 = DISPLAY_TO_FILL_ORDER[display_idx];
-                let idx = idx_i16 as usize;
-
-                if idx_i16 != -1 && idx <= depth {
+                if idx_i16 != -1 && (idx_i16 as usize) <= depth {
+                    let idx = idx_i16 as usize;
                     builder.append(format!(
                         "{}",
-                        BUCAS_LETTER
-                            [TILES[((ids[idx] as usize * 4) + oris[idx] as usize)] as usize]
-                    ));
-                    builder.append(format!(
-                        "{}",
-                        BUCAS_LETTER[TILES
-                            [((ids[idx] as usize * 4) + ((oris[idx] + 1) % 4) as usize)]
+                        BUCAS_LETTER[TILES[((to_id(tiles_idx, idx) * 4) + to_ori(tiles_idx, idx))]
                             as usize]
                     ));
                     builder.append(format!(
                         "{}",
-                        BUCAS_LETTER[TILES
-                            [((ids[idx] as usize * 4) + ((oris[idx] + 2) % 4) as usize)]
+                        BUCAS_LETTER[TILES[((to_id(tiles_idx, idx) * 4)
+                            + ((to_ori(tiles_idx, idx) + 1) % 4) as usize)]
                             as usize]
                     ));
                     builder.append(format!(
                         "{}",
-                        BUCAS_LETTER[TILES
-                            [((ids[idx] as usize * 4) + ((oris[idx] + 3) % 4) as usize)]
+                        BUCAS_LETTER[TILES[((to_id(tiles_idx, idx) * 4)
+                            + ((to_ori(tiles_idx, idx) + 2) % 4) as usize)]
+                            as usize]
+                    ));
+                    builder.append(format!(
+                        "{}",
+                        BUCAS_LETTER[TILES[((to_id(tiles_idx, idx) * 4)
+                            + ((to_ori(tiles_idx, idx) + 3) % 4) as usize)]
                             as usize]
                     ));
                 } else {
@@ -87,11 +75,11 @@ fn save_board_internal(thread_params: &ThreadParams, ids: &[u8], oris: &[u8], de
 
         builder.append(BOARD_PIECES_PARAM);
 
-        for idx_i16 in DISPLAY_TO_FILL_ORDER.iter().take(NUM_TILES) {
+        for idx_i16 in DISPLAY_TO_FILL_ORDER.iter().take(NUM_CELLS) {
             let idx = *idx_i16 as usize;
 
             if *idx_i16 != -1 && idx <= depth {
-                let real_tile_id = to_real_tile_id(ids[idx]);
+                let real_tile_id = to_real_tile_id(to_id(tiles_idx, idx));
                 builder.append(format!("{:0>3}", real_tile_id));
             } else {
                 builder.append("000");
@@ -135,9 +123,17 @@ fn add_empty_cell(builder: &mut Builder) {
     builder.append(format!("{}", BUCAS_LETTER[GREY as usize]));
 }
 
+fn to_id(tiles_idx: [usize; NUM_TILES], idx: usize) -> usize {
+    BICOLOUR_TILES[tiles_idx[idx]] as usize
+}
+
+fn to_ori(tiles_idx: [usize; NUM_TILES], idx: usize) -> usize {
+    BICOLOUR_TILES[tiles_idx[idx] + 1] as usize
+}
+
 // Convert zero based tile ID back to real tile ID.
-fn to_real_tile_id(id: u8) -> u32 {
-    if PLACE_MIDS_ONLY {
+fn to_real_tile_id(id: usize) -> u32 {
+    if cfg!(feature = "backtracker-mids") {
         (id as u32) + 61
     } else {
         (id as u32) + 1
