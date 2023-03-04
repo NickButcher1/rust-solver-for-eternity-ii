@@ -17,7 +17,7 @@ pub const NUM_COLS: usize = 16;
 // pub const NUM_MID_COLOURS: u32 = 17;
 
 #[cfg(feature = "backtracker-mids")]
-pub const ANY_COLOUR: u8 = 17;
+pub const ANY_COLOUR: usize = 17;
 
 const INVALID_CELL_IDX: u8 = 255;
 

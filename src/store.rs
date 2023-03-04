@@ -16,6 +16,25 @@ use string_builder::Builder;
 static BASE_URL: &str = "https://e2.bucas.name/#puzzle=NickB&board_w=16&board_h=16&motifs_order=jblackwood&board_edges=";
 static BOARD_PIECES_PARAM: &str = "&board_pieces=";
 
+fn north_colour(tiles_idx: [usize; NUM_TILES], depth: usize) -> usize {
+    colour_for_side(tiles_idx, depth, 0)
+}
+
+fn east_colour(tiles_idx: [usize; NUM_TILES], depth: usize) -> usize {
+    colour_for_side(tiles_idx, depth, 1)
+}
+
+fn south_colour(tiles_idx: [usize; NUM_TILES], depth: usize) -> usize {
+    colour_for_side(tiles_idx, depth, 2)
+}
+
+fn west_colour(tiles_idx: [usize; NUM_TILES], depth: usize) -> usize {
+    colour_for_side(tiles_idx, depth, 3)
+}
+
+fn colour_for_side(tiles_idx: [usize; NUM_TILES], depth: usize, ori: usize) -> usize {
+    TILES[((to_id(tiles_idx, depth) * 4) + ((to_ori(tiles_idx, depth) + ori) % 4) as usize)] as usize
+}
 pub fn save_board(thread_params: &ThreadParams, tiles_idx: [usize; NUM_TILES], depth: usize) {
     let mut builder = Builder::default();
     for row in 0..NUM_ROWS {
@@ -44,29 +63,10 @@ pub fn save_board(thread_params: &ThreadParams, tiles_idx: [usize; NUM_TILES], d
                 let idx_i16 = DISPLAY_TO_FILL_ORDER[display_idx];
                 if idx_i16 != -1 && (idx_i16 as usize) <= depth {
                     let idx = idx_i16 as usize;
-                    builder.append(format!(
-                        "{}",
-                        BUCAS_LETTER[TILES[((to_id(tiles_idx, idx) * 4) + to_ori(tiles_idx, idx))]
-                            as usize]
-                    ));
-                    builder.append(format!(
-                        "{}",
-                        BUCAS_LETTER[TILES[((to_id(tiles_idx, idx) * 4)
-                            + ((to_ori(tiles_idx, idx) + 1) % 4) as usize)]
-                            as usize]
-                    ));
-                    builder.append(format!(
-                        "{}",
-                        BUCAS_LETTER[TILES[((to_id(tiles_idx, idx) * 4)
-                            + ((to_ori(tiles_idx, idx) + 2) % 4) as usize)]
-                            as usize]
-                    ));
-                    builder.append(format!(
-                        "{}",
-                        BUCAS_LETTER[TILES[((to_id(tiles_idx, idx) * 4)
-                            + ((to_ori(tiles_idx, idx) + 3) % 4) as usize)]
-                            as usize]
-                    ));
+                    builder.append(format!("{}", BUCAS_LETTER[north_colour(tiles_idx, idx)]));
+                    builder.append(format!("{}", BUCAS_LETTER[east_colour(tiles_idx, idx)]));
+                    builder.append(format!("{}", BUCAS_LETTER[south_colour(tiles_idx, idx)]));
+                    builder.append(format!("{}", BUCAS_LETTER[west_colour(tiles_idx, idx)]));
                 } else {
                     add_empty_cell(&mut builder);
                 }
@@ -132,10 +132,10 @@ fn to_ori(tiles_idx: [usize; NUM_TILES], idx: usize) -> usize {
 }
 
 // Convert zero based tile ID back to real tile ID.
-fn to_real_tile_id(id: usize) -> u32 {
+fn to_real_tile_id(id: usize) -> usize {
     if cfg!(feature = "backtracker-mids") {
-        (id as u32) + 61
+        id + 61
     } else {
-        (id as u32) + 1
+        id + 1
     }
 }

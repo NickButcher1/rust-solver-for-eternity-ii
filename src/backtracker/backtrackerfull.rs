@@ -8,14 +8,15 @@ use crate::backtracker::{NUM_TILES, RECORD_DEPTH_SOLUTIONS, RECORD_DEPTH_STATS};
 use crate::store;
 use crate::Backtracker;
 use crate::{
-    iterate_possible_tiles, place_tile, record_count_at_depth, record_partial_solution_at_depth,
-    record_solution, return_if_no_tiles, try_next_cell, unplace_tile,
+    east_colour, get_num_tiles, get_tile_id, is_tile_unplaced, iterate_possible_tiles, place_tile,
+    record_count_at_depth, record_partial_solution_at_depth, record_solution, return_if_no_tiles,
+    south_colour, try_next_cell, unplace_tile,
 };
 
 impl Backtracker<'_> {
     pub fn add_tile_0(&mut self, _depth: usize) {
         let tileoris_offset = TOP_LEFT_CORNER_OFFSET;
-        let num_tiles = BICOLOUR_TILES[tileoris_offset] as usize;
+        let num_tiles = get_num_tiles!(tileoris_offset);
 
         if self.thread_params.is_mt_mode {
             let tiles_idx: usize = tileoris_offset + 2 + 4 * self.thread_params.tile_0_idx;
@@ -28,17 +29,16 @@ impl Backtracker<'_> {
     }
 
     pub fn add_tile_top_right_corner(&mut self, depth: usize) {
-        let tileoris_offset = TOP_RIGHT_CORNER_COLOUR_ARRAY
-            [self.placed_east_colour[FILL_ORDER[depth].west_idx as usize] as usize]
-            as usize;
+        let tileoris_offset =
+            TOP_RIGHT_CORNER_COLOUR_ARRAY[east_colour!(self, FILL_ORDER[depth])] as usize;
 
-        let num_tiles = BICOLOUR_TILES[tileoris_offset] as usize;
+        let num_tiles = get_num_tiles!(tileoris_offset);
         return_if_no_tiles!(num_tiles);
 
         for tiles_idx in iterate_possible_tiles!(self, tileoris_offset, num_tiles) {
-            let id = BICOLOUR_TILES[tiles_idx] as usize;
+            let id = get_tile_id!(tiles_idx);
 
-            if !self.used_tiles[id] {
+            if is_tile_unplaced!(self, id) {
                 place_tile!(self, depth, id, tiles_idx);
 
                 record_count_at_depth!(self, depth);
@@ -52,17 +52,16 @@ impl Backtracker<'_> {
     }
 
     pub fn add_tile_bottom_left_corner(&mut self, depth: usize) {
-        let tileoris_offset = BOTTOM_LEFT_CORNER_COLOUR_ARRAY
-            [self.placed_south_colour[FILL_ORDER[depth].north_idx as usize] as usize]
-            as usize;
+        let tileoris_offset =
+            BOTTOM_LEFT_CORNER_COLOUR_ARRAY[south_colour!(self, FILL_ORDER[depth])] as usize;
 
-        let num_tiles = BICOLOUR_TILES[tileoris_offset] as usize;
+        let num_tiles = get_num_tiles!(tileoris_offset);
         return_if_no_tiles!(num_tiles);
 
         for tiles_idx in iterate_possible_tiles!(self, tileoris_offset, num_tiles) {
-            let id = BICOLOUR_TILES[tiles_idx] as usize;
+            let id = get_tile_id!(tiles_idx);
 
-            if !self.used_tiles[id] {
+            if is_tile_unplaced!(self, id) {
                 place_tile!(self, depth, id, tiles_idx);
 
                 record_count_at_depth!(self, depth);
@@ -76,16 +75,15 @@ impl Backtracker<'_> {
     }
 
     pub fn add_tile_top_edge(&mut self, depth: usize) {
-        let tileoris_offset = TOP_EDGES_COLOUR_ARRAY
-            [self.placed_east_colour[FILL_ORDER[depth].west_idx as usize] as usize]
-            as usize;
+        let tileoris_offset =
+            TOP_EDGES_COLOUR_ARRAY[east_colour!(self, FILL_ORDER[depth])] as usize;
 
-        let num_tiles = BICOLOUR_TILES[tileoris_offset] as usize;
+        let num_tiles = get_num_tiles!(tileoris_offset);
 
         for tiles_idx in iterate_possible_tiles!(self, tileoris_offset, num_tiles) {
-            let id = BICOLOUR_TILES[tiles_idx] as usize;
+            let id = get_tile_id!(tiles_idx);
 
-            if !self.used_tiles[id] {
+            if is_tile_unplaced!(self, id) {
                 place_tile!(self, depth, id, tiles_idx);
 
                 record_count_at_depth!(self, depth);
@@ -101,17 +99,16 @@ impl Backtracker<'_> {
     pub fn add_tile_right_edge(&mut self, depth: usize) {
         let cell: &Cell = &FILL_ORDER[depth];
 
-        let tileoris_offset =
-            RIGHT_EDGES_BICOLOUR_ARRAY[self.placed_south_colour[cell.north_idx as usize] as usize]
-                [self.placed_east_colour[cell.west_idx as usize] as usize] as usize;
+        let tileoris_offset = RIGHT_EDGES_BICOLOUR_ARRAY[south_colour!(self, cell)]
+            [east_colour!(self, cell)] as usize;
 
-        let num_tiles = BICOLOUR_TILES[tileoris_offset] as usize;
+        let num_tiles = get_num_tiles!(tileoris_offset);
         return_if_no_tiles!(num_tiles);
 
         for tiles_idx in iterate_possible_tiles!(self, tileoris_offset, num_tiles) {
-            let id = BICOLOUR_TILES[tiles_idx] as usize;
+            let id = get_tile_id!(tiles_idx);
 
-            if !self.used_tiles[id] {
+            if is_tile_unplaced!(self, id) {
                 place_tile!(self, depth, id, tiles_idx);
 
                 record_count_at_depth!(self, depth);
@@ -125,16 +122,15 @@ impl Backtracker<'_> {
     }
 
     pub fn add_tile_left_edge(&mut self, depth: usize) {
-        let tileoris_offset = LEFT_EDGES_COLOUR_ARRAY
-            [self.placed_south_colour[FILL_ORDER[depth].north_idx as usize] as usize]
-            as usize;
+        let tileoris_offset =
+            LEFT_EDGES_COLOUR_ARRAY[south_colour!(self, FILL_ORDER[depth])] as usize;
 
-        let num_tiles = BICOLOUR_TILES[tileoris_offset] as usize;
+        let num_tiles = get_num_tiles!(tileoris_offset);
 
         for tiles_idx in iterate_possible_tiles!(self, tileoris_offset, num_tiles) {
-            let id = BICOLOUR_TILES[tiles_idx] as usize;
+            let id = get_tile_id!(tiles_idx);
 
-            if !self.used_tiles[id] {
+            if is_tile_unplaced!(self, id) {
                 place_tile!(self, depth, id, tiles_idx);
 
                 record_count_at_depth!(self, depth);
@@ -150,17 +146,16 @@ impl Backtracker<'_> {
     pub fn add_tile_bottom_edge(&mut self, depth: usize) {
         let cell: &Cell = &FILL_ORDER[depth];
 
-        let tileoris_offset =
-            BOTTOM_EDGES_BICOLOUR_ARRAY[self.placed_south_colour[cell.north_idx as usize] as usize]
-                [self.placed_east_colour[cell.west_idx as usize] as usize] as usize;
+        let tileoris_offset = BOTTOM_EDGES_BICOLOUR_ARRAY[south_colour!(self, cell)]
+            [east_colour!(self, cell)] as usize;
 
-        let num_tiles = BICOLOUR_TILES[tileoris_offset] as usize;
+        let num_tiles = get_num_tiles!(tileoris_offset);
         return_if_no_tiles!(num_tiles);
 
         for tiles_idx in iterate_possible_tiles!(self, tileoris_offset, num_tiles) {
-            let id = BICOLOUR_TILES[tiles_idx] as usize;
+            let id = get_tile_id!(tiles_idx);
 
-            if !self.used_tiles[id] {
+            if is_tile_unplaced!(self, id) {
                 place_tile!(self, depth, id, tiles_idx);
 
                 record_count_at_depth!(self, depth);
@@ -177,16 +172,15 @@ impl Backtracker<'_> {
         let cell: &Cell = &FILL_ORDER[depth];
 
         let tileoris_offset =
-            MIDS_BICOLOUR_ARRAY[self.placed_south_colour[cell.north_idx as usize] as usize]
-                [self.placed_east_colour[cell.west_idx as usize] as usize] as usize;
+            MIDS_BICOLOUR_ARRAY[south_colour!(self, cell)][east_colour!(self, cell)] as usize;
 
-        let num_tiles = BICOLOUR_TILES[tileoris_offset] as usize;
+        let num_tiles = get_num_tiles!(tileoris_offset);
         return_if_no_tiles!(num_tiles);
 
         for tiles_idx in iterate_possible_tiles!(self, tileoris_offset, num_tiles) {
-            let id = BICOLOUR_TILES[tiles_idx] as usize;
+            let id = get_tile_id!(tiles_idx);
 
-            if !self.used_tiles[id] {
+            if is_tile_unplaced!(self, id) {
                 place_tile!(self, depth, id, tiles_idx);
 
                 record_count_at_depth!(self, depth);
@@ -202,17 +196,15 @@ impl Backtracker<'_> {
     pub fn add_tile_final(&mut self, depth: usize) {
         let cell: &Cell = &FILL_ORDER[depth];
 
-        let tileoris_offset = BOTTOM_RIGHT_CORNER_BICOLOUR_ARRAY
-            [self.placed_south_colour[cell.north_idx as usize] as usize]
-            [self.placed_east_colour[cell.west_idx as usize] as usize]
-            as usize;
+        let tileoris_offset = BOTTOM_RIGHT_CORNER_BICOLOUR_ARRAY[south_colour!(self, cell)]
+            [east_colour!(self, cell)] as usize;
 
-        let num_tiles = BICOLOUR_TILES[tileoris_offset] as usize;
+        let num_tiles = get_num_tiles!(tileoris_offset);
 
         for tiles_idx in iterate_possible_tiles!(self, tileoris_offset, num_tiles) {
-            let id = BICOLOUR_TILES[tiles_idx] as usize;
+            let id = get_tile_id!(tiles_idx);
 
-            if !self.used_tiles[id] {
+            if is_tile_unplaced!(self, id) {
                 place_tile!(self, depth, id, tiles_idx);
 
                 record_count_at_depth!(self, depth);

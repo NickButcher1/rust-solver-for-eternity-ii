@@ -24,6 +24,27 @@ macro_rules! return_if_no_tiles {
 }
 
 #[macro_export]
+macro_rules! get_num_tiles {
+    ($offset:expr) => {
+        BICOLOUR_TILES[$offset] as usize
+    };
+}
+
+#[macro_export]
+macro_rules! get_tile_id {
+    ($offset:expr) => {
+        BICOLOUR_TILES[$offset] as usize
+    };
+}
+
+#[macro_export]
+macro_rules! is_tile_unplaced {
+    ($self:expr, $id:expr) => {
+        !$self.used_tiles[$id]
+    };
+}
+
+#[macro_export]
 macro_rules! place_tile {
     ($self:expr, $depth:expr, $id:expr, $tiles_idx:expr) => {
         $self.used_tiles[$id] = true;
@@ -70,6 +91,20 @@ macro_rules! iterate_possible_tiles {
 macro_rules! try_next_cell {
     ($self:expr, $depth:expr) => {
         $self.add_tile_functions[$depth + 1]($self, $depth + 1);
+    };
+}
+
+#[macro_export]
+macro_rules! south_colour {
+    ($self:expr, $cell:expr) => {
+        $self.placed_south_colour[$cell.north_idx as usize] as usize
+    };
+}
+
+#[macro_export]
+macro_rules! east_colour {
+    ($self:expr, $cell:expr) => {
+        $self.placed_east_colour[$cell.west_idx as usize] as usize
     };
 }
 
@@ -205,9 +240,8 @@ impl Backtracker<'_> {
     }
 
     fn add_tile_0_inner(&mut self, tiles_idx: usize) {
-        let id = BICOLOUR_TILES[tiles_idx] as usize;
+        let id = get_tile_id!(tiles_idx);
 
-        assert!(!self.used_tiles[id]);
         place_tile!(self, 0, id, tiles_idx);
 
         record_count_at_depth!(self, 0);

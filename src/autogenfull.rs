@@ -20,7 +20,7 @@ pub const NUM_COLS: usize = 16;
 // pub const NUM_MID_COLOURS: u32 = 17;
 
 #[cfg(feature = "backtracker-mids")]
-pub const ANY_COLOUR: u8 = 17;
+pub const ANY_COLOUR: usize = 17;
 
 const INVALID_CELL_IDX: u8 = 255;
 
@@ -32,7 +32,7 @@ pub struct Cell {
     pub ori: Ori,
 }
 
-pub const FILL_ORDER: [Cell; NUM_TILES] = [
+pub const FILL_ORDER: [Cell; NUM_CELLS] = [
     Cell {
         north_idx: INVALID_CELL_IDX,
         west_idx: INVALID_CELL_IDX,
@@ -1096,482 +1096,482 @@ pub const FILL_ORDER: [Cell; NUM_TILES] = [
         ori: CLOCKWISE_90,
     }, // idx 176
     Cell {
-        north_idx: 176,
-        west_idx: INVALID_CELL_IDX,
-        cell_type: EDGE_LEFT,
-        ori: CLOCKWISE_90,
-    }, // idx 177
-    Cell {
-        north_idx: 177,
-        west_idx: INVALID_CELL_IDX,
-        cell_type: EDGE_LEFT,
-        ori: CLOCKWISE_90,
-    }, // idx 178
-    Cell {
-        north_idx: 178,
-        west_idx: INVALID_CELL_IDX,
-        cell_type: EDGE_LEFT,
-        ori: CLOCKWISE_90,
-    }, // idx 179
-    Cell {
-        north_idx: 179,
-        west_idx: INVALID_CELL_IDX,
-        cell_type: CORNER_BOTTOM_LEFT,
-        ori: BASE,
-    }, // idx 180
-    Cell {
         north_idx: 161,
         west_idx: 176,
         cell_type: MID,
         ori: ANY,
+    }, // idx 177
+    Cell {
+        north_idx: 162,
+        west_idx: 177,
+        cell_type: MID,
+        ori: ANY,
+    }, // idx 178
+    Cell {
+        north_idx: 163,
+        west_idx: 178,
+        cell_type: MID,
+        ori: ANY,
+    }, // idx 179
+    Cell {
+        north_idx: 164,
+        west_idx: 179,
+        cell_type: MID,
+        ori: ANY,
+    }, // idx 180
+    Cell {
+        north_idx: 165,
+        west_idx: 180,
+        cell_type: MID,
+        ori: ANY,
     }, // idx 181
     Cell {
-        north_idx: 181,
-        west_idx: 177,
+        north_idx: 166,
+        west_idx: 181,
         cell_type: MID,
         ori: ANY,
     }, // idx 182
     Cell {
-        north_idx: 182,
-        west_idx: 178,
+        north_idx: 167,
+        west_idx: 182,
         cell_type: MID,
         ori: ANY,
     }, // idx 183
     Cell {
-        north_idx: 183,
-        west_idx: 179,
+        north_idx: 168,
+        west_idx: 183,
         cell_type: MID,
         ori: ANY,
     }, // idx 184
     Cell {
-        north_idx: 184,
-        west_idx: 180,
-        cell_type: EDGE_BOTTOM,
-        ori: BASE,
+        north_idx: 169,
+        west_idx: 184,
+        cell_type: MID,
+        ori: ANY,
     }, // idx 185
     Cell {
-        north_idx: 162,
-        west_idx: 181,
+        north_idx: 170,
+        west_idx: 185,
         cell_type: MID,
         ori: ANY,
     }, // idx 186
     Cell {
-        north_idx: 186,
-        west_idx: 182,
+        north_idx: 171,
+        west_idx: 186,
         cell_type: MID,
         ori: ANY,
     }, // idx 187
     Cell {
-        north_idx: 187,
-        west_idx: 183,
+        north_idx: 172,
+        west_idx: 187,
         cell_type: MID,
         ori: ANY,
     }, // idx 188
     Cell {
-        north_idx: 188,
-        west_idx: 184,
+        north_idx: 173,
+        west_idx: 188,
         cell_type: MID,
         ori: ANY,
     }, // idx 189
     Cell {
-        north_idx: 189,
-        west_idx: 185,
-        cell_type: EDGE_BOTTOM,
-        ori: BASE,
+        north_idx: 174,
+        west_idx: 189,
+        cell_type: MID,
+        ori: ANY,
     }, // idx 190
     Cell {
-        north_idx: 163,
-        west_idx: 186,
-        cell_type: MID,
-        ori: ANY,
+        north_idx: 175,
+        west_idx: 190,
+        cell_type: EDGE_RIGHT,
+        ori: ANTICLOCKWISE_90,
     }, // idx 191
     Cell {
-        north_idx: 191,
-        west_idx: 187,
-        cell_type: MID,
-        ori: ANY,
+        north_idx: 176,
+        west_idx: INVALID_CELL_IDX,
+        cell_type: EDGE_LEFT,
+        ori: CLOCKWISE_90,
     }, // idx 192
     Cell {
-        north_idx: 192,
-        west_idx: 188,
+        north_idx: 177,
+        west_idx: 192,
         cell_type: MID,
         ori: ANY,
     }, // idx 193
     Cell {
-        north_idx: 193,
-        west_idx: 189,
+        north_idx: 178,
+        west_idx: 193,
         cell_type: MID,
         ori: ANY,
     }, // idx 194
     Cell {
-        north_idx: 194,
-        west_idx: 190,
-        cell_type: EDGE_BOTTOM,
-        ori: BASE,
+        north_idx: 179,
+        west_idx: 194,
+        cell_type: MID,
+        ori: ANY,
     }, // idx 195
     Cell {
-        north_idx: 164,
-        west_idx: 191,
+        north_idx: 180,
+        west_idx: 195,
         cell_type: MID,
         ori: ANY,
     }, // idx 196
     Cell {
-        north_idx: 196,
-        west_idx: 192,
+        north_idx: 181,
+        west_idx: 196,
         cell_type: MID,
         ori: ANY,
     }, // idx 197
     Cell {
-        north_idx: 197,
-        west_idx: 193,
+        north_idx: 182,
+        west_idx: 197,
         cell_type: MID,
         ori: ANY,
     }, // idx 198
     Cell {
-        north_idx: 198,
-        west_idx: 194,
+        north_idx: 183,
+        west_idx: 198,
         cell_type: MID,
         ori: ANY,
     }, // idx 199
     Cell {
-        north_idx: 199,
-        west_idx: 195,
-        cell_type: EDGE_BOTTOM,
-        ori: BASE,
+        north_idx: 184,
+        west_idx: 199,
+        cell_type: MID,
+        ori: ANY,
     }, // idx 200
     Cell {
-        north_idx: 165,
-        west_idx: 196,
+        north_idx: 185,
+        west_idx: 200,
         cell_type: MID,
         ori: ANY,
     }, // idx 201
     Cell {
-        north_idx: 201,
-        west_idx: 197,
+        north_idx: 186,
+        west_idx: 201,
         cell_type: MID,
         ori: ANY,
     }, // idx 202
     Cell {
-        north_idx: 202,
-        west_idx: 198,
+        north_idx: 187,
+        west_idx: 202,
         cell_type: MID,
         ori: ANY,
     }, // idx 203
     Cell {
-        north_idx: 203,
-        west_idx: 199,
+        north_idx: 188,
+        west_idx: 203,
         cell_type: MID,
         ori: ANY,
     }, // idx 204
     Cell {
-        north_idx: 204,
-        west_idx: 200,
-        cell_type: EDGE_BOTTOM,
-        ori: BASE,
+        north_idx: 189,
+        west_idx: 204,
+        cell_type: MID,
+        ori: ANY,
     }, // idx 205
     Cell {
-        north_idx: 166,
-        west_idx: 201,
+        north_idx: 190,
+        west_idx: 205,
         cell_type: MID,
         ori: ANY,
     }, // idx 206
     Cell {
-        north_idx: 206,
-        west_idx: 202,
-        cell_type: MID,
-        ori: ANY,
+        north_idx: 191,
+        west_idx: 206,
+        cell_type: EDGE_RIGHT,
+        ori: ANTICLOCKWISE_90,
     }, // idx 207
     Cell {
-        north_idx: 207,
-        west_idx: 203,
-        cell_type: MID,
-        ori: ANY,
+        north_idx: 192,
+        west_idx: INVALID_CELL_IDX,
+        cell_type: EDGE_LEFT,
+        ori: CLOCKWISE_90,
     }, // idx 208
     Cell {
-        north_idx: 208,
-        west_idx: 204,
+        north_idx: 193,
+        west_idx: 208,
         cell_type: MID,
         ori: ANY,
     }, // idx 209
     Cell {
-        north_idx: 209,
-        west_idx: 205,
-        cell_type: EDGE_BOTTOM,
-        ori: BASE,
+        north_idx: 194,
+        west_idx: 209,
+        cell_type: MID,
+        ori: ANY,
     }, // idx 210
     Cell {
-        north_idx: 167,
-        west_idx: 206,
+        north_idx: 195,
+        west_idx: 210,
         cell_type: MID,
         ori: ANY,
     }, // idx 211
     Cell {
-        north_idx: 211,
-        west_idx: 207,
+        north_idx: 196,
+        west_idx: 211,
         cell_type: MID,
         ori: ANY,
     }, // idx 212
     Cell {
-        north_idx: 212,
-        west_idx: 208,
+        north_idx: 197,
+        west_idx: 212,
         cell_type: MID,
         ori: ANY,
     }, // idx 213
     Cell {
-        north_idx: 213,
-        west_idx: 209,
+        north_idx: 198,
+        west_idx: 213,
         cell_type: MID,
         ori: ANY,
     }, // idx 214
     Cell {
-        north_idx: 214,
-        west_idx: 210,
-        cell_type: EDGE_BOTTOM,
-        ori: BASE,
+        north_idx: 199,
+        west_idx: 214,
+        cell_type: MID,
+        ori: ANY,
     }, // idx 215
     Cell {
-        north_idx: 168,
-        west_idx: 211,
+        north_idx: 200,
+        west_idx: 215,
         cell_type: MID,
         ori: ANY,
     }, // idx 216
     Cell {
-        north_idx: 216,
-        west_idx: 212,
+        north_idx: 201,
+        west_idx: 216,
         cell_type: MID,
         ori: ANY,
     }, // idx 217
     Cell {
-        north_idx: 217,
-        west_idx: 213,
+        north_idx: 202,
+        west_idx: 217,
         cell_type: MID,
         ori: ANY,
     }, // idx 218
     Cell {
-        north_idx: 218,
-        west_idx: 214,
+        north_idx: 203,
+        west_idx: 218,
         cell_type: MID,
         ori: ANY,
     }, // idx 219
     Cell {
-        north_idx: 219,
-        west_idx: 215,
-        cell_type: EDGE_BOTTOM,
-        ori: BASE,
+        north_idx: 204,
+        west_idx: 219,
+        cell_type: MID,
+        ori: ANY,
     }, // idx 220
     Cell {
-        north_idx: 169,
-        west_idx: 216,
+        north_idx: 205,
+        west_idx: 220,
         cell_type: MID,
         ori: ANY,
     }, // idx 221
     Cell {
-        north_idx: 221,
-        west_idx: 217,
+        north_idx: 206,
+        west_idx: 221,
         cell_type: MID,
         ori: ANY,
     }, // idx 222
     Cell {
-        north_idx: 222,
-        west_idx: 218,
-        cell_type: MID,
-        ori: ANY,
+        north_idx: 207,
+        west_idx: 222,
+        cell_type: EDGE_RIGHT,
+        ori: ANTICLOCKWISE_90,
     }, // idx 223
     Cell {
-        north_idx: 223,
-        west_idx: 219,
-        cell_type: MID,
-        ori: ANY,
+        north_idx: 208,
+        west_idx: INVALID_CELL_IDX,
+        cell_type: EDGE_LEFT,
+        ori: CLOCKWISE_90,
     }, // idx 224
     Cell {
-        north_idx: 224,
-        west_idx: 220,
-        cell_type: EDGE_BOTTOM,
-        ori: BASE,
+        north_idx: 209,
+        west_idx: 224,
+        cell_type: MID,
+        ori: ANY,
     }, // idx 225
     Cell {
-        north_idx: 170,
-        west_idx: 221,
+        north_idx: 210,
+        west_idx: 225,
         cell_type: MID,
         ori: ANY,
     }, // idx 226
     Cell {
-        north_idx: 226,
-        west_idx: 222,
+        north_idx: 211,
+        west_idx: 226,
         cell_type: MID,
         ori: ANY,
     }, // idx 227
     Cell {
-        north_idx: 227,
-        west_idx: 223,
+        north_idx: 212,
+        west_idx: 227,
         cell_type: MID,
         ori: ANY,
     }, // idx 228
     Cell {
-        north_idx: 228,
-        west_idx: 224,
+        north_idx: 213,
+        west_idx: 228,
         cell_type: MID,
         ori: ANY,
     }, // idx 229
     Cell {
-        north_idx: 229,
-        west_idx: 225,
-        cell_type: EDGE_BOTTOM,
-        ori: BASE,
+        north_idx: 214,
+        west_idx: 229,
+        cell_type: MID,
+        ori: ANY,
     }, // idx 230
     Cell {
-        north_idx: 171,
-        west_idx: 226,
+        north_idx: 215,
+        west_idx: 230,
         cell_type: MID,
         ori: ANY,
     }, // idx 231
     Cell {
-        north_idx: 231,
-        west_idx: 227,
+        north_idx: 216,
+        west_idx: 231,
         cell_type: MID,
         ori: ANY,
     }, // idx 232
     Cell {
-        north_idx: 232,
-        west_idx: 228,
+        north_idx: 217,
+        west_idx: 232,
         cell_type: MID,
         ori: ANY,
     }, // idx 233
     Cell {
-        north_idx: 233,
-        west_idx: 229,
+        north_idx: 218,
+        west_idx: 233,
         cell_type: MID,
         ori: ANY,
     }, // idx 234
     Cell {
-        north_idx: 234,
-        west_idx: 230,
-        cell_type: EDGE_BOTTOM,
-        ori: BASE,
+        north_idx: 219,
+        west_idx: 234,
+        cell_type: MID,
+        ori: ANY,
     }, // idx 235
     Cell {
-        north_idx: 172,
-        west_idx: 231,
+        north_idx: 220,
+        west_idx: 235,
         cell_type: MID,
         ori: ANY,
     }, // idx 236
     Cell {
-        north_idx: 236,
-        west_idx: 232,
+        north_idx: 221,
+        west_idx: 236,
         cell_type: MID,
         ori: ANY,
     }, // idx 237
     Cell {
-        north_idx: 237,
-        west_idx: 233,
+        north_idx: 222,
+        west_idx: 237,
         cell_type: MID,
         ori: ANY,
     }, // idx 238
     Cell {
-        north_idx: 238,
-        west_idx: 234,
-        cell_type: MID,
-        ori: ANY,
+        north_idx: 223,
+        west_idx: 238,
+        cell_type: EDGE_RIGHT,
+        ori: ANTICLOCKWISE_90,
     }, // idx 239
     Cell {
-        north_idx: 239,
-        west_idx: 235,
-        cell_type: EDGE_BOTTOM,
+        north_idx: 224,
+        west_idx: INVALID_CELL_IDX,
+        cell_type: CORNER_BOTTOM_LEFT,
         ori: BASE,
     }, // idx 240
     Cell {
-        north_idx: 173,
-        west_idx: 236,
-        cell_type: MID,
-        ori: ANY,
+        north_idx: 225,
+        west_idx: 240,
+        cell_type: EDGE_BOTTOM,
+        ori: BASE,
     }, // idx 241
     Cell {
-        north_idx: 241,
-        west_idx: 237,
-        cell_type: MID,
-        ori: ANY,
+        north_idx: 226,
+        west_idx: 241,
+        cell_type: EDGE_BOTTOM,
+        ori: BASE,
     }, // idx 242
     Cell {
-        north_idx: 242,
-        west_idx: 238,
-        cell_type: MID,
-        ori: ANY,
+        north_idx: 227,
+        west_idx: 242,
+        cell_type: EDGE_BOTTOM,
+        ori: BASE,
     }, // idx 243
     Cell {
-        north_idx: 243,
-        west_idx: 239,
-        cell_type: MID,
-        ori: ANY,
+        north_idx: 228,
+        west_idx: 243,
+        cell_type: EDGE_BOTTOM,
+        ori: BASE,
     }, // idx 244
     Cell {
-        north_idx: 244,
-        west_idx: 240,
+        north_idx: 229,
+        west_idx: 244,
         cell_type: EDGE_BOTTOM,
         ori: BASE,
     }, // idx 245
     Cell {
-        north_idx: 174,
-        west_idx: 241,
-        cell_type: MID,
-        ori: ANY,
+        north_idx: 230,
+        west_idx: 245,
+        cell_type: EDGE_BOTTOM,
+        ori: BASE,
     }, // idx 246
     Cell {
-        north_idx: 246,
-        west_idx: 242,
-        cell_type: MID,
-        ori: ANY,
+        north_idx: 231,
+        west_idx: 246,
+        cell_type: EDGE_BOTTOM,
+        ori: BASE,
     }, // idx 247
     Cell {
-        north_idx: 247,
-        west_idx: 243,
-        cell_type: MID,
-        ori: ANY,
+        north_idx: 232,
+        west_idx: 247,
+        cell_type: EDGE_BOTTOM,
+        ori: BASE,
     }, // idx 248
     Cell {
-        north_idx: 248,
-        west_idx: 244,
-        cell_type: MID,
-        ori: ANY,
+        north_idx: 233,
+        west_idx: 248,
+        cell_type: EDGE_BOTTOM,
+        ori: BASE,
     }, // idx 249
     Cell {
-        north_idx: 249,
-        west_idx: 245,
+        north_idx: 234,
+        west_idx: 249,
         cell_type: EDGE_BOTTOM,
         ori: BASE,
     }, // idx 250
     Cell {
-        north_idx: 175,
-        west_idx: 246,
-        cell_type: EDGE_RIGHT,
-        ori: ANTICLOCKWISE_90,
+        north_idx: 235,
+        west_idx: 250,
+        cell_type: EDGE_BOTTOM,
+        ori: BASE,
     }, // idx 251
     Cell {
-        north_idx: 251,
-        west_idx: 247,
-        cell_type: EDGE_RIGHT,
-        ori: ANTICLOCKWISE_90,
+        north_idx: 236,
+        west_idx: 251,
+        cell_type: EDGE_BOTTOM,
+        ori: BASE,
     }, // idx 252
     Cell {
-        north_idx: 252,
-        west_idx: 248,
-        cell_type: EDGE_RIGHT,
-        ori: ANTICLOCKWISE_90,
+        north_idx: 237,
+        west_idx: 252,
+        cell_type: EDGE_BOTTOM,
+        ori: BASE,
     }, // idx 253
     Cell {
-        north_idx: 253,
-        west_idx: 249,
-        cell_type: EDGE_RIGHT,
-        ori: ANTICLOCKWISE_90,
+        north_idx: 238,
+        west_idx: 253,
+        cell_type: EDGE_BOTTOM,
+        ori: BASE,
     }, // idx 254
     Cell {
-        north_idx: 254,
-        west_idx: 250,
+        north_idx: 239,
+        west_idx: 254,
         cell_type: CORNER_BOTTOM_RIGHT,
         ori: ANTICLOCKWISE_90,
     }, // idx 255
 ];
 
-pub const DISPLAY_TO_FILL_ORDER: [i16; NUM_CELLS] = [
+pub const DISPLAY_TO_FILL_ORDER: [i16; NUM_TILES] = [
     0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
     26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49,
     50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73,
@@ -1580,11 +1580,11 @@ pub const DISPLAY_TO_FILL_ORDER: [i16; NUM_CELLS] = [
     117, 118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135,
     136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 150, 151, 152, 153, 154,
     155, 156, 157, 158, 159, 160, 161, 162, 163, 164, 165, 166, 167, 168, 169, 170, 171, 172, 173,
-    174, 175, 176, 181, 186, 191, 196, 201, 206, 211, 216, 221, 226, 231, 236, 241, 246, 251, 177,
-    182, 187, 192, 197, 202, 207, 212, 217, 222, 227, 232, 237, 242, 247, 252, 178, 183, 188, 193,
-    198, 203, 208, 213, 218, 223, 228, 233, 238, 243, 248, 253, 179, 184, 189, 194, 199, 204, 209,
-    214, 219, 224, 229, 234, 239, 244, 249, 254, 180, 185, 190, 195, 200, 205, 210, 215, 220, 225,
-    230, 235, 240, 245, 250, 255,
+    174, 175, 176, 177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192,
+    193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211,
+    212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230,
+    231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249,
+    250, 251, 252, 253, 254, 255,
 ];
 
 pub const TILES: [u8; 1024] = [
@@ -2025,84 +2025,84 @@ impl Backtracker<'_> {
         Backtracker::add_tile_mid,
         Backtracker::add_tile_right_edge,
         Backtracker::add_tile_left_edge,
+        Backtracker::add_tile_mid,
+        Backtracker::add_tile_mid,
+        Backtracker::add_tile_mid,
+        Backtracker::add_tile_mid,
+        Backtracker::add_tile_mid,
+        Backtracker::add_tile_mid,
+        Backtracker::add_tile_mid,
+        Backtracker::add_tile_mid,
+        Backtracker::add_tile_mid,
+        Backtracker::add_tile_mid,
+        Backtracker::add_tile_mid,
+        Backtracker::add_tile_mid,
+        Backtracker::add_tile_mid,
+        Backtracker::add_tile_mid,
+        Backtracker::add_tile_right_edge,
         Backtracker::add_tile_left_edge,
+        Backtracker::add_tile_mid,
+        Backtracker::add_tile_mid,
+        Backtracker::add_tile_mid,
+        Backtracker::add_tile_mid,
+        Backtracker::add_tile_mid,
+        Backtracker::add_tile_mid,
+        Backtracker::add_tile_mid,
+        Backtracker::add_tile_mid,
+        Backtracker::add_tile_mid,
+        Backtracker::add_tile_mid,
+        Backtracker::add_tile_mid,
+        Backtracker::add_tile_mid,
+        Backtracker::add_tile_mid,
+        Backtracker::add_tile_mid,
+        Backtracker::add_tile_right_edge,
         Backtracker::add_tile_left_edge,
+        Backtracker::add_tile_mid,
+        Backtracker::add_tile_mid,
+        Backtracker::add_tile_mid,
+        Backtracker::add_tile_mid,
+        Backtracker::add_tile_mid,
+        Backtracker::add_tile_mid,
+        Backtracker::add_tile_mid,
+        Backtracker::add_tile_mid,
+        Backtracker::add_tile_mid,
+        Backtracker::add_tile_mid,
+        Backtracker::add_tile_mid,
+        Backtracker::add_tile_mid,
+        Backtracker::add_tile_mid,
+        Backtracker::add_tile_mid,
+        Backtracker::add_tile_right_edge,
         Backtracker::add_tile_left_edge,
+        Backtracker::add_tile_mid,
+        Backtracker::add_tile_mid,
+        Backtracker::add_tile_mid,
+        Backtracker::add_tile_mid,
+        Backtracker::add_tile_mid,
+        Backtracker::add_tile_mid,
+        Backtracker::add_tile_mid,
+        Backtracker::add_tile_mid,
+        Backtracker::add_tile_mid,
+        Backtracker::add_tile_mid,
+        Backtracker::add_tile_mid,
+        Backtracker::add_tile_mid,
+        Backtracker::add_tile_mid,
+        Backtracker::add_tile_mid,
+        Backtracker::add_tile_right_edge,
         Backtracker::add_tile_bottom_left_corner,
-        Backtracker::add_tile_mid,
-        Backtracker::add_tile_mid,
-        Backtracker::add_tile_mid,
-        Backtracker::add_tile_mid,
         Backtracker::add_tile_bottom_edge,
-        Backtracker::add_tile_mid,
-        Backtracker::add_tile_mid,
-        Backtracker::add_tile_mid,
-        Backtracker::add_tile_mid,
         Backtracker::add_tile_bottom_edge,
-        Backtracker::add_tile_mid,
-        Backtracker::add_tile_mid,
-        Backtracker::add_tile_mid,
-        Backtracker::add_tile_mid,
         Backtracker::add_tile_bottom_edge,
-        Backtracker::add_tile_mid,
-        Backtracker::add_tile_mid,
-        Backtracker::add_tile_mid,
-        Backtracker::add_tile_mid,
         Backtracker::add_tile_bottom_edge,
-        Backtracker::add_tile_mid,
-        Backtracker::add_tile_mid,
-        Backtracker::add_tile_mid,
-        Backtracker::add_tile_mid,
         Backtracker::add_tile_bottom_edge,
-        Backtracker::add_tile_mid,
-        Backtracker::add_tile_mid,
-        Backtracker::add_tile_mid,
-        Backtracker::add_tile_mid,
         Backtracker::add_tile_bottom_edge,
-        Backtracker::add_tile_mid,
-        Backtracker::add_tile_mid,
-        Backtracker::add_tile_mid,
-        Backtracker::add_tile_mid,
         Backtracker::add_tile_bottom_edge,
-        Backtracker::add_tile_mid,
-        Backtracker::add_tile_mid,
-        Backtracker::add_tile_mid,
-        Backtracker::add_tile_mid,
         Backtracker::add_tile_bottom_edge,
-        Backtracker::add_tile_mid,
-        Backtracker::add_tile_mid,
-        Backtracker::add_tile_mid,
-        Backtracker::add_tile_mid,
         Backtracker::add_tile_bottom_edge,
-        Backtracker::add_tile_mid,
-        Backtracker::add_tile_mid,
-        Backtracker::add_tile_mid,
-        Backtracker::add_tile_mid,
         Backtracker::add_tile_bottom_edge,
-        Backtracker::add_tile_mid,
-        Backtracker::add_tile_mid,
-        Backtracker::add_tile_mid,
-        Backtracker::add_tile_mid,
         Backtracker::add_tile_bottom_edge,
-        Backtracker::add_tile_mid,
-        Backtracker::add_tile_mid,
-        Backtracker::add_tile_mid,
-        Backtracker::add_tile_mid,
         Backtracker::add_tile_bottom_edge,
-        Backtracker::add_tile_mid,
-        Backtracker::add_tile_mid,
-        Backtracker::add_tile_mid,
-        Backtracker::add_tile_mid,
         Backtracker::add_tile_bottom_edge,
-        Backtracker::add_tile_mid,
-        Backtracker::add_tile_mid,
-        Backtracker::add_tile_mid,
-        Backtracker::add_tile_mid,
         Backtracker::add_tile_bottom_edge,
-        Backtracker::add_tile_right_edge,
-        Backtracker::add_tile_right_edge,
-        Backtracker::add_tile_right_edge,
-        Backtracker::add_tile_right_edge,
         Backtracker::add_tile_final,
     ];
 }
