@@ -1,8 +1,8 @@
 #[cfg(feature = "backtracker-full")]
-use crate::autogenfull::{BICOLOUR_TILES, NUM_TILES};
+use crate::autogenfull::{BICOLOUR_TILES, NUM_TILES, PREFILL_DEPTH, PREFILL_TILES_OFFSET};
 #[cfg(feature = "backtracker-mids")]
-use crate::autogenmids::{BICOLOUR_TILES, NUM_TILES};
-use crate::ThreadParams;
+use crate::autogenmids::{BICOLOUR_TILES, NUM_TILES, PREFILL_DEPTH, PREFILL_TILES_OFFSET};
+use crate::{store, ThreadParams};
 use separator::Separatable;
 use std::thread;
 use std::time::Duration;
@@ -234,9 +234,19 @@ impl Backtracker<'_> {
         });
 
         let start_time = SystemTime::now();
-        self.add_tile_functions[0](self, 0);
+        self.prefill();
+        self.add_tile_functions[PREFILL_DEPTH](self, PREFILL_DEPTH);
         let elapsed_time = start_time.elapsed().unwrap().as_secs();
         print_num_solutions(self.thread_params, elapsed_time);
+    }
+
+    fn prefill(&mut self) {
+        for depth in 0..PREFILL_DEPTH {
+            let tiles_idx = PREFILL_TILES_OFFSET[depth] as usize;
+            let id = get_tile_id!(tiles_idx);
+            place_tile!(self, depth, id, tiles_idx);
+            record_count_at_depth!(self, depth);
+        }
     }
 
     fn add_tile_0_inner(&mut self, tiles_idx: usize) {
