@@ -151,11 +151,14 @@ fn print_num_solutions(thread_params: ThreadParams, elapsed_seconds: u64) {
                 .take(NUM_TILES)
             {
                 if !thread_params.is_mt_mode {
-                    builder.append(format!(
-                        "{:>3} -> {}\n",
-                        idx + 1,
-                        num_solutions_at_depth.separated_string()
-                    ));
+                    // Don't waste space printing the prefilled section.
+                    if idx >= (PREFILL_DEPTH - 1) {
+                        builder.append(format!(
+                            "{:>3} -> {}\n",
+                            idx + 1,
+                            num_solutions_at_depth.separated_string()
+                        ));
+                    }
                 }
                 total += num_solutions_at_depth;
 
