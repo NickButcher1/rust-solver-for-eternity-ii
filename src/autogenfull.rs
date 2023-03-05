@@ -904,7 +904,7 @@ pub static MIDS_BICOLOUR_ARRAY: [[u16; 17]; 17] = [
     [4630, 4648, 4670, 4692, 4698, 4708, 4718, 4740, 4750, 4768, 4774, 4780, 4794, 4816, 4822, 4828, 4850, ], // north 17
 ];
 
-pub static BICOLOUR_TILES: [u8; 4856] = [
+pub static BICOLOUR_TILES: [u8; 4896] = [
     // unused
     0, 0,
     // topLeftCornersWithTwoColours
@@ -1674,10 +1674,12 @@ pub static BICOLOUR_TILES: [u8; 4856] = [
     194, 1, 8, 9, 205, 0, 9, 15, 221, 1, 16, 1, 246, 1, 10, 10, 255, 1, 16, 5,
     1, 0, // 4369
     99, 0, 0, 15,
+    // prefillTiles
+    0, 3, 4, 0, 4, 2, 0, 0, 6, 2, 3, 0, 14, 2, 6, 2, 5, 2, 6, 0, 21, 2, 8, 2, 10, 2, 10, 0, 23, 2, 14, 2, 18, 2, 4, 2, 19, 2, 10, 2,
 ];
 
 pub const PREFILL_DEPTH: usize = 10;
 
 pub const PREFILL_TILES_OFFSET: [u16; 10] = [
-    4, null, 94, 98, null, null, 190, null, null, 198, 
+    4856, 4860, 4864, 4868, 4872, 4876, 4880, 4884, 4888, 4892, 
 ];

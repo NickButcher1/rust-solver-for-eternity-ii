@@ -2,7 +2,7 @@
 use crate::autogenfull::{BICOLOUR_TILES, NUM_TILES, PREFILL_DEPTH, PREFILL_TILES_OFFSET};
 #[cfg(feature = "backtracker-mids")]
 use crate::autogenmids::{BICOLOUR_TILES, NUM_TILES, PREFILL_DEPTH, PREFILL_TILES_OFFSET};
-use crate::{store, ThreadParams};
+use crate::ThreadParams;
 use separator::Separatable;
 use std::thread;
 use std::time::Duration;
