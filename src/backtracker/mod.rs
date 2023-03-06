@@ -152,7 +152,7 @@ fn print_num_solutions(thread_params: ThreadParams, elapsed_seconds: u64) {
             {
                 if !thread_params.is_mt_mode {
                     // Don't waste space printing the prefilled section.
-                    if idx >= (PREFILL_DEPTH - 1) {
+                    if idx >= PREFILL_DEPTH {
                         builder.append(format!(
                             "{:>3} -> {}\n",
                             idx + 1,
