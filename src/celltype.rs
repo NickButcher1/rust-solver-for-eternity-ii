@@ -28,3 +28,5 @@ pub const MID_TOP_LEFT: CellType = 1;
 pub const MID_TOP: CellType = 2;
 #[cfg(feature = "backtracker-mids")]
 pub const MID_LEFT: CellType = 3;
+#[cfg(feature = "backtracker-mids")]
+pub const MID_RIGHT: CellType = 4;

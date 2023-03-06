@@ -33,7 +33,8 @@ fn west_colour(tiles_idx: [usize; NUM_TILES], depth: usize) -> usize {
 }
 
 fn colour_for_side(tiles_idx: [usize; NUM_TILES], depth: usize, ori: usize) -> usize {
-    TILES[((to_id(tiles_idx, depth) * 4) + ((to_ori(tiles_idx, depth) + ori) % 4) as usize)] as usize
+    TILES[((to_id(tiles_idx, depth) * 4) + ((to_ori(tiles_idx, depth) + ori) % 4) as usize)]
+        as usize
 }
 pub fn save_board(thread_params: &ThreadParams, tiles_idx: [usize; NUM_TILES], depth: usize) {
     let mut builder = Builder::default();

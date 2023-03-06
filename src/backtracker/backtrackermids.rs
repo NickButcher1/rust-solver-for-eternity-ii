@@ -6,8 +6,8 @@ use crate::store;
 use crate::Backtracker;
 use crate::{
     east_colour, get_num_tiles, get_tile_id, is_tile_unplaced, iterate_possible_tiles, place_tile,
-    record_count_at_depth, record_partial_solution_at_depth, record_solution, return_if_no_tiles,
-    south_colour, try_next_cell, unplace_tile,
+    place_tile_omit_store_east, record_count_at_depth, record_partial_solution_at_depth,
+    record_solution, return_if_no_tiles, south_colour, try_next_cell, unplace_tile,
 };
 
 impl Backtracker<'_> {
@@ -83,6 +83,31 @@ impl Backtracker<'_> {
 
             if is_tile_unplaced!(self, id) {
                 place_tile!(self, depth, id, tiles_idx);
+
+                record_count_at_depth!(self, depth);
+                record_partial_solution_at_depth!(self, depth);
+
+                try_next_cell!(self, depth);
+
+                unplace_tile!(self, id);
+            }
+        }
+    }
+
+    pub fn add_tile_right(&mut self, depth: usize) {
+        let cell: &Cell = &FILL_ORDER[depth];
+
+        let tileoris_offset =
+            MIDS_BICOLOUR_ARRAY[south_colour!(self, cell)][east_colour!(self, cell)] as usize;
+
+        let num_tiles = get_num_tiles!(tileoris_offset);
+        return_if_no_tiles!(num_tiles);
+
+        for tiles_idx in iterate_possible_tiles!(self, tileoris_offset, num_tiles) {
+            let id = get_tile_id!(tiles_idx);
+
+            if is_tile_unplaced!(self, id) {
+                place_tile_omit_store_east!(self, depth, id, tiles_idx);
 
                 record_count_at_depth!(self, depth);
                 record_partial_solution_at_depth!(self, depth);
