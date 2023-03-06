@@ -246,8 +246,15 @@ impl Backtracker<'_> {
         });
 
         let start_time = SystemTime::now();
-        self.prefill();
-        self.add_tile_functions[PREFILL_DEPTH](self, PREFILL_DEPTH);
+
+        if PREFILL_DEPTH != 0 {
+            self.prefill();
+            self.add_tile_left_mt_prefill_version(PREFILL_DEPTH);
+            // self.add_tile_functions[PREFILL_DEPTH](self, PREFILL_DEPTH);
+        } else {
+            self.add_tile_functions[0](self, 0);
+        }
+
         let elapsed_time = start_time.elapsed().unwrap().as_secs();
         print_num_solutions(self.thread_params, elapsed_time);
     }

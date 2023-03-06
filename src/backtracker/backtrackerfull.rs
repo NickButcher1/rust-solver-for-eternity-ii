@@ -1,7 +1,7 @@
 use crate::autogenfull::{
     Cell, BICOLOUR_TILES, BOTTOM_EDGES_BICOLOUR_ARRAY, BOTTOM_LEFT_CORNER_COLOUR_ARRAY,
     BOTTOM_RIGHT_CORNER_BICOLOUR_ARRAY, FILL_ORDER, LEFT_EDGES_COLOUR_ARRAY, MIDS_BICOLOUR_ARRAY,
-    RIGHT_EDGES_BICOLOUR_ARRAY, TOP_EDGES_COLOUR_ARRAY, TOP_LEFT_CORNER_OFFSET,
+    PREFILL_DEPTH, RIGHT_EDGES_BICOLOUR_ARRAY, TOP_EDGES_COLOUR_ARRAY, TOP_LEFT_CORNER_OFFSET,
     TOP_RIGHT_CORNER_COLOUR_ARRAY,
 };
 use crate::backtracker::{NUM_TILES, RECORD_DEPTH_SOLUTIONS, RECORD_DEPTH_STATS};
@@ -18,7 +18,7 @@ impl Backtracker<'_> {
         let tileoris_offset = TOP_LEFT_CORNER_OFFSET;
         let num_tiles = get_num_tiles!(tileoris_offset);
 
-        if self.thread_params.is_mt_mode {
+        if self.thread_params.is_mt_mode && PREFILL_DEPTH == 0 {
             let tiles_idx: usize = tileoris_offset + 2 + 4 * self.thread_params.tile_0_idx;
             self.add_tile_0_inner(tiles_idx);
         } else {
