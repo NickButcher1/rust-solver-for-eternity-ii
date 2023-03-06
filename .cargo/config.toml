@@ -1,7 +1,7 @@
 [alias]
 full = "run --release --features backtracker-full"
-fullmt = "run --release --features backtracker-full,mt"
 mids = "run --release --features backtracker-mids"
-midsmt = "run --release --features backtracker-mids,mt"
+fullmt = "full --features mt"
+midsmt = "mids --features mt"
 ddfull = "run --features backtracker-full"
 ddmids = "run --features backtracker-mids"
