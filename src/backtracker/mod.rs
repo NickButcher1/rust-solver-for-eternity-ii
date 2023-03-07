@@ -258,8 +258,12 @@ impl Backtracker<'_> {
 
         if PREFILL_DEPTH != 0 {
             self.prefill();
-            self.add_tile_left_mt_prefill_version(PREFILL_DEPTH);
-            // self.add_tile_functions[PREFILL_DEPTH](self, PREFILL_DEPTH);
+            if self.thread_params.is_mt_mode {
+                #[cfg(feature = "backtracker-mids")]
+                self.add_tile_left_mt_prefill_version(PREFILL_DEPTH);
+            } else {
+                self.add_tile_functions[PREFILL_DEPTH](self, PREFILL_DEPTH);
+            }
         } else {
             self.add_tile_functions[0](self, 0);
         }

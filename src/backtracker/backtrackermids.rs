@@ -2,13 +2,13 @@ use crate::autogenmids::{
     Cell, ANY_COLOUR, BICOLOUR_TILES, FILL_ORDER, MIDS_BICOLOUR_ARRAY, NUM_TILES, PREFILL_DEPTH,
 };
 use crate::backtracker::{RECORD_DEPTH_SOLUTIONS, RECORD_DEPTH_STATS};
-use crate::{place_tile_omit_store_south, store};
 use crate::Backtracker;
 use crate::{
     east_colour, get_num_tiles, get_tile_id, is_tile_unplaced, iterate_possible_tiles, place_tile,
     place_tile_omit_store_east, record_count_at_depth, record_partial_solution_at_depth,
     record_solution, return_if_no_tiles, south_colour, try_next_cell, unplace_tile,
 };
+use crate::{place_tile_omit_store_south, store};
 
 impl Backtracker<'_> {
     pub fn add_tile_0(&mut self, _depth: usize) {
@@ -99,7 +99,13 @@ impl Backtracker<'_> {
         let tiles_idx: usize = tileoris_offset + 2 + 4 * self.thread_params.tile_0_idx;
         let id = get_tile_id!(tiles_idx);
 
-        println!("NDBFIX-001: {}, ID/ORI {}/{}, num_tiles {}", self.thread_params.tile_0_idx, id, BICOLOUR_TILES[tiles_idx + 1], num_tiles);
+        println!(
+            "NDBFIX-001: {}, ID/ORI {}/{}, num_tiles {}",
+            self.thread_params.tile_0_idx,
+            id,
+            BICOLOUR_TILES[tiles_idx + 1],
+            num_tiles
+        );
         if is_tile_unplaced!(self, id) {
             println!("NDBFIX-002: {}", self.thread_params.tile_0_idx);
             place_tile!(self, depth, id, tiles_idx);
@@ -113,7 +119,6 @@ impl Backtracker<'_> {
             println!("NDBFIX-00: {} UNPLACE", self.thread_params.tile_0_idx);
         }
     }
-
 
     pub fn add_tile_bottom_left(&mut self, depth: usize) {
         let tileoris_offset =
