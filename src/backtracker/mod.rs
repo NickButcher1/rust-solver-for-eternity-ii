@@ -55,6 +55,15 @@ macro_rules! place_tile {
 }
 
 #[macro_export]
+macro_rules! place_tile_omit_store_south {
+    ($self:expr, $depth:expr, $id:expr, $tiles_idx:expr) => {
+        $self.used_tiles[$id] = true;
+        $self.placed_idx[$depth] = $tiles_idx;
+        $self.placed_east_colour[$depth] = BICOLOUR_TILES[$tiles_idx + 3];
+    };
+}
+
+#[macro_export]
 macro_rules! place_tile_omit_store_east {
     ($self:expr, $depth:expr, $id:expr, $tiles_idx:expr) => {
         $self.used_tiles[$id] = true;

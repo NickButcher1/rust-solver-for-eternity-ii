@@ -2,7 +2,7 @@ use crate::autogenmids::{
     Cell, ANY_COLOUR, BICOLOUR_TILES, FILL_ORDER, MIDS_BICOLOUR_ARRAY, NUM_TILES, PREFILL_DEPTH,
 };
 use crate::backtracker::{RECORD_DEPTH_SOLUTIONS, RECORD_DEPTH_STATS};
-use crate::store;
+use crate::{place_tile_omit_store_south, store};
 use crate::Backtracker;
 use crate::{
     east_colour, get_num_tiles, get_tile_id, is_tile_unplaced, iterate_possible_tiles, place_tile,
@@ -36,6 +36,28 @@ impl Backtracker<'_> {
 
             if is_tile_unplaced!(self, id) {
                 place_tile!(self, depth, id, tiles_idx);
+
+                record_count_at_depth!(self, depth);
+                record_partial_solution_at_depth!(self, depth);
+
+                try_next_cell!(self, depth);
+
+                unplace_tile!(self, id);
+            }
+        }
+    }
+
+    pub fn add_tile_top_right(&mut self, depth: usize) {
+        let tileoris_offset =
+            MIDS_BICOLOUR_ARRAY[ANY_COLOUR][east_colour!(self, FILL_ORDER[depth])] as usize;
+
+        let num_tiles = get_num_tiles!(tileoris_offset);
+
+        for tiles_idx in iterate_possible_tiles!(self, tileoris_offset, num_tiles) {
+            let id = get_tile_id!(tiles_idx);
+
+            if is_tile_unplaced!(self, id) {
+                place_tile_omit_store_east!(self, depth, id, tiles_idx);
 
                 record_count_at_depth!(self, depth);
                 record_partial_solution_at_depth!(self, depth);
@@ -89,6 +111,54 @@ impl Backtracker<'_> {
 
             unplace_tile!(self, id);
             println!("NDBFIX-00: {} UNPLACE", self.thread_params.tile_0_idx);
+        }
+    }
+
+
+    pub fn add_tile_bottom_left(&mut self, depth: usize) {
+        let tileoris_offset =
+            MIDS_BICOLOUR_ARRAY[south_colour!(self, FILL_ORDER[depth])][ANY_COLOUR] as usize;
+
+        let num_tiles = get_num_tiles!(tileoris_offset);
+
+        for tiles_idx in iterate_possible_tiles!(self, tileoris_offset, num_tiles) {
+            let id = get_tile_id!(tiles_idx);
+
+            if is_tile_unplaced!(self, id) {
+                place_tile_omit_store_south!(self, depth, id, tiles_idx);
+
+                record_count_at_depth!(self, depth);
+                record_partial_solution_at_depth!(self, depth);
+
+                try_next_cell!(self, depth);
+
+                unplace_tile!(self, id);
+            }
+        }
+    }
+
+    pub fn add_tile_bottom(&mut self, depth: usize) {
+        let cell: &Cell = &FILL_ORDER[depth];
+
+        let tileoris_offset =
+            MIDS_BICOLOUR_ARRAY[south_colour!(self, cell)][east_colour!(self, cell)] as usize;
+
+        let num_tiles = get_num_tiles!(tileoris_offset);
+        return_if_no_tiles!(num_tiles);
+
+        for tiles_idx in iterate_possible_tiles!(self, tileoris_offset, num_tiles) {
+            let id = get_tile_id!(tiles_idx);
+
+            if is_tile_unplaced!(self, id) {
+                place_tile_omit_store_south!(self, depth, id, tiles_idx);
+
+                record_count_at_depth!(self, depth);
+                record_partial_solution_at_depth!(self, depth);
+
+                try_next_cell!(self, depth);
+
+                unplace_tile!(self, id);
+            }
         }
     }
 
